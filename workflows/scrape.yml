@@ -2,55 +2,41 @@ name: Daily Property Scraper
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours (0:00, 6:00, 12:00, 18:00 UTC)
-  workflow_dispatch:  # Manual trigger for testing
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
-        run: |
-          pip install requests beautifulsoup4
-      
+        run: pip install requests beautifulsoup4
+
       - name: Run scraper
         run: python scraper_script.py
-      
-      - name: Configure Git
+
+      - name: Configure git
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-      
-      - name: Check for changes
-        id: check_changes
+
+      - name: Commit changes
         run: |
           if git diff --quiet properties_cache.json; then
-            echo "No changes detected"
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No changes"
           else
-            echo "Changes detected"
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+            git add properties_cache.json
+            git commit -m "Update properties cache"
+            git push
           fi
-      
-      - name: Commit and push changes
-        if: steps.check_changes.outputs.has_changes == 'true'
+
+      - name: Status
         run: |
-          git add properties_cache.json
-          git commit -m "🔄 Update cached properties - $(date +'%Y-%m-%d %H:%M:%S')"
-          git push
-      
-      - name: Log scrape status
-        run: |
-          echo "✅ Scraper completed"
-          if [ -f properties_cache.json ]; then
-            COUNT=$(python -c "import json; data=json.load(open('properties_cache.json')); print(data.get('totalCount', 0))")
-            echo "📊 Total properties: $COUNT"
-          fi
+          echo "Scraper completed"
+          python -c "import json; data=json.load(open('properties_cache.json')); print(f'Total: {data.get(\"totalCount\", 0)} properties')"
