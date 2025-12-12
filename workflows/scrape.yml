@@ -2,14 +2,15 @@ name: Daily Property Scraper
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
-  workflow_dispatch:  # Manual trigger
+    - cron: '0 */6 * * *'  # Every 6 hours (0:00, 6:00, 12:00, 18:00 UTC)
+  workflow_dispatch:  # Manual trigger for testing
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -18,18 +19,38 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install selenium beautifulsoup4 requests
-          
-      - name: Download ChromeDriver
-        run: |
-          wget https://chromedriver.chromium.org/download
-          # Extract and setup
-          
+          pip install requests beautifulsoup4
+      
       - name: Run scraper
         run: python scraper_script.py
-        
-      - name: Commit results
+      
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet properties_cache.json; then
+            echo "No changes detected"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git add properties_cache.json
-          git commit -m "Update cached properties"
+          git commit -m "🔄 Update cached properties - $(date +'%Y-%m-%d %H:%M:%S')"
           git push
+      
+      - name: Log scrape status
+        run: |
+          echo "✅ Scraper completed"
+          if [ -f properties_cache.json ]; then
+            COUNT=$(python -c "import json; data=json.load(open('properties_cache.json')); print(data.get('totalCount', 0))")
+            echo "📊 Total properties: $COUNT"
+          fi
