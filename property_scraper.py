@@ -368,43 +368,32 @@ class PropertyTrackerService:
             "lbs": LBSAdapter()
         }
     
+    # In property_scraper.py, replace the search_all_sources method:
+
     def search_all_sources(self, filters: Dict) -> List[Dict]:
-        """
-        Search all configured sources and merge results
-        
-        Args:
-            filters: {
-                "minPrice": 200000,
-                "maxPrice": 800000,
-                "minArea": 70,
-                "regions": ["70", "71"],
-                "sources": ["sparkasse", "volksbank", "lbs"]
-            }
-        """
+        """Return cached data immediately (no live scraping on Render)"""
         all_properties = []
         
         for source in filters.get("sources", ["sparkasse", "volksbank", "lbs"]):
             if source in self.adapters:
                 try:
-                    props = self.adapters[source].fetch_properties(filters)
+                    # Always use cache first - no live scraping
+                    props = self.adapters[source].properties  # Just return cached
                     all_properties.extend(props)
                 except Exception as e:
                     logger.error(f"Error fetching from {source}: {e}")
         
-        # Remove duplicates based on title + price + location
+        # Remove duplicates
         seen = set()
         unique_props = []
-        
         for prop in all_properties:
             key = (prop.get("title"), prop.get("price"), prop.get("location"))
             if key not in seen:
                 seen.add(key)
                 unique_props.append(prop)
         
-        # Sort by days on market (pre-market first)
-        unique_props.sort(key=lambda x: x.get("daysOnMarket", 999))
-        
         return unique_props
+
     
     def get_stats(self, properties: List[Dict]) -> Dict:
         """Calculate aggregated statistics"""
