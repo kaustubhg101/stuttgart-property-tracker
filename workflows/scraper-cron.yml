@@ -1,22 +1,35 @@
-name: Scheduled Property Scraper
+name: Daily Property Scraper
 
 on:
   schedule:
-    # Run every 6 hours
-    - cron: '0 */6 * * *'
-  workflow_dispatch:  # Manual trigger button
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:  # Manual trigger
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger scraper
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
         run: |
-          curl -X POST https://property-tracker-backend.onrender.com/api/search \
-            -H "Content-Type: application/json" \
-            -d '{
-              "minPrice": 200000,
-              "maxPrice": 1000000,
-              "minArea": 70,
-              "sources": ["sparkasse", "volksbank", "lbs"]
-            }'
+          pip install selenium beautifulsoup4 requests
+          
+      - name: Download ChromeDriver
+        run: |
+          wget https://chromedriver.chromium.org/download
+          # Extract and setup
+          
+      - name: Run scraper
+        run: python scraper_script.py
+        
+      - name: Commit results
+        run: |
+          git add properties_cache.json
+          git commit -m "Update cached properties"
+          git push
