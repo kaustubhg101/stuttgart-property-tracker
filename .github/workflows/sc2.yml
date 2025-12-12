@@ -5,14 +5,15 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -36,11 +37,9 @@ jobs:
             echo "No changes in cache"
           else
             git add properties_cache.json
-            git commit -m "Update properties cache - $(date)"
-            git push origin main
+            git commit -m "🔄 Update properties cache - $(date +'%Y-%m-%d %H:%M:%S')"
+            git push
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Log completion
-        run: echo "Scraper completed successfully"
+        run: echo "✅ Scraper completed successfully"
