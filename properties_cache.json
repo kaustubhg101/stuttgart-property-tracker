@@ -10,37 +10,13 @@
       "daysOnMarket": 3,
       "yearBuilt": 1995,
       "heatingType": "Gasheizung",
-      "features": ["Balkon", "Parkett", "Renoviert 2023"],
+      "features": [
+        "Balkon",
+        "Parkett",
+        "Renoviert 2023"
+      ],
       "url": "https://s-immobilien.de/property/123",
-      "scrapedAt": "2025-12-12T23:00:00"
-    },
-    {
-      "title": "4-Zimmer Einfamilienhaus mit Garten",
-      "price": 675000,
-      "area": 140,
-      "rooms": 4,
-      "location": "Stuttgart-Vaihingen, 70186",
-      "source": "volksbank",
-      "daysOnMarket": 1,
-      "yearBuilt": 2015,
-      "heatingType": "Wärmepumpe",
-      "features": ["Garten 280m²", "Garage", "Neubau-Standard"],
-      "url": "https://vbs.immo/property/456",
-      "scrapedAt": "2025-12-12T23:00:00"
-    },
-    {
-      "title": "Kapitalanlage: 2er Maisonette, zentral",
-      "price": 395000,
-      "area": 72,
-      "rooms": 2,
-      "location": "Stuttgart-Mitte, 70173",
-      "source": "lbs",
-      "daysOnMarket": 5,
-      "yearBuilt": 1920,
-      "heatingType": "Fernwärme",
-      "features": ["Rendite 4,2%", "Denkmalschutz", "Makler"],
-      "url": "https://www.lbs.de/property/789",
-      "scrapedAt": "2025-12-12T23:00:00"
+      "scrapedAt": "2025-12-12T23:01:21.478420"
     },
     {
       "title": "Villa mit Pool, Hang-Lage",
@@ -52,37 +28,13 @@
       "daysOnMarket": 2,
       "yearBuilt": 2008,
       "heatingType": "Wärmepumpe",
-      "features": ["Pool", "Sauna", "Moderne Smart-Home Technik"],
+      "features": [
+        "Pool",
+        "Sauna",
+        "Moderne Smart-Home Technik"
+      ],
       "url": "https://s-immobilien.de/property/321",
-      "scrapedAt": "2025-12-12T23:00:00"
-    },
-    {
-      "title": "Wohnung in beliebter Innenstadtlage",
-      "price": 445000,
-      "area": 68,
-      "rooms": 2,
-      "location": "Stuttgart-West, 70176",
-      "source": "volksbank",
-      "daysOnMarket": 4,
-      "yearBuilt": 1975,
-      "heatingType": "Gasheizung",
-      "features": ["Dachterrasse", "High-Speed Internet", "Grüne Umgebung"],
-      "url": "https://vbs.immo/property/654",
-      "scrapedAt": "2025-12-12T23:00:00"
-    },
-    {
-      "title": "Reihenhaus modern ausgebaut",
-      "price": 580000,
-      "area": 110,
-      "rooms": 4,
-      "location": "Stuttgart-Möhringen, 70435",
-      "source": "lbs",
-      "daysOnMarket": 6,
-      "yearBuilt": 2005,
-      "heatingType": "Wärmepumpe",
-      "features": ["Doppelgarage", "Keller", "Wärmepumpe"],
-      "url": "https://www.lbs.de/property/987",
-      "scrapedAt": "2025-12-12T23:00:00"
+      "scrapedAt": "2025-12-12T23:01:21.478429"
     },
     {
       "title": "Modernes Einfamilienhaus in Sindelfingen",
@@ -94,9 +46,13 @@
       "daysOnMarket": 2,
       "yearBuilt": 2018,
       "heatingType": "Wärmepumpe",
-      "features": ["Energieeffizient KfW 55", "Terrasse", "Carport"],
+      "features": [
+        "Energieeffizient KfW 55",
+        "Terrasse",
+        "Carport"
+      ],
       "url": "https://kskbb.de/property/201",
-      "scrapedAt": "2025-12-12T23:00:00"
+      "scrapedAt": "2025-12-12T23:01:21.478432"
     },
     {
       "title": "Wohnung in Böblingen-Zentrum",
@@ -108,37 +64,13 @@
       "daysOnMarket": 4,
       "yearBuilt": 1985,
       "heatingType": "Gasheizung",
-      "features": ["Balkon", "Parklatz", "Treppenhaus renoviert"],
+      "features": [
+        "Balkon",
+        "Parklatz",
+        "Treppenhaus renoviert"
+      ],
       "url": "https://kskbb.de/property/202",
-      "scrapedAt": "2025-12-12T23:00:00"
-    },
-    {
-      "title": "Einfamilienhaus in Ludwigsburg",
-      "price": 720000,
-      "area": 165,
-      "rooms": 5,
-      "location": "Ludwigsburg, 71638",
-      "source": "volksbank",
-      "daysOnMarket": 1,
-      "yearBuilt": 2010,
-      "heatingType": "Fernwärme",
-      "features": ["Großer Garten", "Doppelgarage", "Kamin"],
-      "url": "https://ksklb.de/property/301",
-      "scrapedAt": "2025-12-12T23:00:00"
-    },
-    {
-      "title": "Kapitalanlage Wohnung in Ludwigsburg",
-      "price": 350000,
-      "area": 65,
-      "rooms": 2,
-      "location": "Ludwigsburg, 71638",
-      "source": "lbs",
-      "daysOnMarket": 3,
-      "yearBuilt": 1970,
-      "heatingType": "Gasheizung",
-      "features": ["Rendite 4,8%", "Vermietet", "Sanierungspotential"],
-      "url": "https://www.lbs.de/property/302",
-      "scrapedAt": "2025-12-12T23:00:00"
+      "scrapedAt": "2025-12-12T23:01:21.478433"
     },
     {
       "title": "Villa Waiblingen, Rems-Murr-Kreis",
@@ -150,37 +82,13 @@
       "daysOnMarket": 2,
       "yearBuilt": 2003,
       "heatingType": "Wärmepumpe",
-      "features": ["Panoramablick", "Pool", "Wellness-Bereich"],
+      "features": [
+        "Panoramablick",
+        "Pool",
+        "Wellness-Bereich"
+      ],
       "url": "https://kskwm.de/property/401",
-      "scrapedAt": "2025-12-12T23:00:00"
-    },
-    {
-      "title": "Doppelhaushälfte Schorndorf",
-      "price": 550000,
-      "area": 120,
-      "rooms": 4,
-      "location": "Schorndorf, 73614",
-      "source": "volksbank",
-      "daysOnMarket": 5,
-      "yearBuilt": 2000,
-      "heatingType": "Gasheizung",
-      "features": ["Garten 200m²", "Terrasse", "Nebengebäude"],
-      "url": "https://vrs.immo/property/402",
-      "scrapedAt": "2025-12-12T23:00:00"
-    },
-    {
-      "title": "Moderne Wohnung in Filderstadt",
-      "price": 420000,
-      "area": 78,
-      "rooms": 2,
-      "location": "Filderstadt, 70374",
-      "source": "volksbank",
-      "daysOnMarket": 1,
-      "yearBuilt": 2020,
-      "heatingType": "Wärmepumpe",
-      "features": ["Smart Home", "Balkon Süd", "Tiefgarage"],
-      "url": "https://volksbank-filder.de/property/501",
-      "scrapedAt": "2025-12-12T23:00:00"
+      "scrapedAt": "2025-12-12T23:01:21.478437"
     },
     {
       "title": "Haus zum Mitnehmen in Filderstadt",
@@ -192,11 +100,159 @@
       "daysOnMarket": 3,
       "yearBuilt": 1995,
       "heatingType": "Ölheizung",
-      "features": ["Sanierungsbedürftig", "Großes Potential", "Ausbaugarten"],
+      "features": [
+        "Sanierungsbedürftig",
+        "Großes Potential",
+        "Ausbaugarten"
+      ],
       "url": "https://kskbb.de/property/502",
-      "scrapedAt": "2025-12-12T23:00:00"
+      "scrapedAt": "2025-12-12T23:01:21.478440"
+    },
+    {
+      "title": "4-Zimmer Einfamilienhaus mit Garten",
+      "price": 675000,
+      "area": 140,
+      "rooms": 4,
+      "location": "Stuttgart-Vaihingen, 70186",
+      "source": "volksbank",
+      "daysOnMarket": 1,
+      "yearBuilt": 2015,
+      "heatingType": "Wärmepumpe",
+      "features": [
+        "Garten 280m²",
+        "Garage",
+        "Neubau-Standard"
+      ],
+      "url": "https://vbs.immo/property/456",
+      "scrapedAt": "2025-12-12T23:01:21.478426"
+    },
+    {
+      "title": "Wohnung in beliebter Innenstadtlage",
+      "price": 445000,
+      "area": 68,
+      "rooms": 2,
+      "location": "Stuttgart-West, 70176",
+      "source": "volksbank",
+      "daysOnMarket": 4,
+      "yearBuilt": 1975,
+      "heatingType": "Gasheizung",
+      "features": [
+        "Dachterrasse",
+        "High-Speed Internet",
+        "Grüne Umgebung"
+      ],
+      "url": "https://vbs.immo/property/654",
+      "scrapedAt": "2025-12-12T23:01:21.478430"
+    },
+    {
+      "title": "Einfamilienhaus in Ludwigsburg",
+      "price": 720000,
+      "area": 165,
+      "rooms": 5,
+      "location": "Ludwigsburg, 71638",
+      "source": "volksbank",
+      "daysOnMarket": 1,
+      "yearBuilt": 2010,
+      "heatingType": "Fernwärme",
+      "features": [
+        "Großer Garten",
+        "Doppelgarage",
+        "Kamin"
+      ],
+      "url": "https://ksklb.de/property/301",
+      "scrapedAt": "2025-12-12T23:01:21.478434"
+    },
+    {
+      "title": "Doppelhaushälfte Schorndorf",
+      "price": 550000,
+      "area": 120,
+      "rooms": 4,
+      "location": "Schorndorf, 73614",
+      "source": "volksbank",
+      "daysOnMarket": 5,
+      "yearBuilt": 2000,
+      "heatingType": "Gasheizung",
+      "features": [
+        "Garten 200m²",
+        "Terrasse",
+        "Nebengebäude"
+      ],
+      "url": "https://vrs.immo/property/402",
+      "scrapedAt": "2025-12-12T23:01:21.478438"
+    },
+    {
+      "title": "Moderne Wohnung in Filderstadt",
+      "price": 420000,
+      "area": 78,
+      "rooms": 2,
+      "location": "Filderstadt, 70374",
+      "source": "volksbank",
+      "daysOnMarket": 1,
+      "yearBuilt": 2020,
+      "heatingType": "Wärmepumpe",
+      "features": [
+        "Smart Home",
+        "Balkon Süd",
+        "Tiefgarage"
+      ],
+      "url": "https://volksbank-filder.de/property/501",
+      "scrapedAt": "2025-12-12T23:01:21.478439"
+    },
+    {
+      "title": "Kapitalanlage: 2er Maisonette, zentral",
+      "price": 395000,
+      "area": 72,
+      "rooms": 2,
+      "location": "Stuttgart-Mitte, 70173",
+      "source": "lbs",
+      "daysOnMarket": 5,
+      "yearBuilt": 1920,
+      "heatingType": "Fernwärme",
+      "features": [
+        "Rendite 4,2%",
+        "Denkmalschutz",
+        "Makler"
+      ],
+      "url": "https://www.lbs.de/property/789",
+      "scrapedAt": "2025-12-12T23:01:21.478427"
+    },
+    {
+      "title": "Reihenhaus modern ausgebaut",
+      "price": 580000,
+      "area": 110,
+      "rooms": 4,
+      "location": "Stuttgart-Möhringen, 70435",
+      "source": "lbs",
+      "daysOnMarket": 6,
+      "yearBuilt": 2005,
+      "heatingType": "Wärmepumpe",
+      "features": [
+        "Doppelgarage",
+        "Keller",
+        "Wärmepumpe"
+      ],
+      "url": "https://www.lbs.de/property/987",
+      "scrapedAt": "2025-12-12T23:01:21.478431"
+    },
+    {
+      "title": "Kapitalanlage Wohnung in Ludwigsburg",
+      "price": 350000,
+      "area": 65,
+      "rooms": 2,
+      "location": "Ludwigsburg, 71638",
+      "source": "lbs",
+      "daysOnMarket": 3,
+      "yearBuilt": 1970,
+      "heatingType": "Gasheizung",
+      "features": [
+        "Rendite 4,8%",
+        "Vermietet",
+        "Sanierungspotential"
+      ],
+      "url": "https://www.lbs.de/property/302",
+      "scrapedAt": "2025-12-12T23:01:21.478436"
     }
   ],
-  "lastUpdated": "2025-12-12T23:00:00",
+  "lastUpdated": "2025-12-12T23:01:21.478723",
   "totalCount": 14
 }
