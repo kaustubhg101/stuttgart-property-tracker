@@ -1,0 +1,42 @@
+name: Daily Property Scraper
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run scraper
+        run: python scraper_script.py
+
+      - name: Configure git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet properties_cache.json; then
+            echo "No changes"
+          else
+            git add properties_cache.json
+            git commit -m "Update properties cache"
+            git push
+          fi
+
+      - name: Status
+        run: |
+          echo "Scraper completed"
+          python -c "import json; data=json.load(open('properties_cache.json')); print(f'Total: {data.get(\"totalCount\", 0)} properties')"
