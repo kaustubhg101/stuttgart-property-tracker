@@ -9,9 +9,13 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
@@ -23,20 +27,20 @@ jobs:
 
       - name: Configure git
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
 
-      - name: Commit changes
+      - name: Commit and push
         run: |
           if git diff --quiet properties_cache.json; then
-            echo "No changes"
+            echo "No changes in cache"
           else
             git add properties_cache.json
-            git commit -m "Update properties cache"
-            git push
+            git commit -m "Update properties cache - $(date)"
+            git push origin main
           fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Status
-        run: |
-          echo "Scraper completed"
-          python -c "import json; data=json.load(open('properties_cache.json')); print(f'Total: {data.get(\"totalCount\", 0)} properties')"
+      - name: Log completion
+        run: echo "Scraper completed successfully"
