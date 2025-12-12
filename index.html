@@ -444,8 +444,8 @@
     </style>
 </head>
 <body>
-    <h1>🏠 Stuttgart Property Tracker</h1>
-    <p class="subtitle">Track properties across bank portals before they hit ImmoScout24</p>
+    <h1>🏠 Regional Property Tracker</h1>
+    <p class="subtitle">Stuttgart, Böblingen, Ludwigsburg, Rems-Murr, Filderstadt - track bank portals before ImmoScout24</p>
 
     <div class="controls-section">
         <div class="form-group">
@@ -461,8 +461,15 @@
             <input type="number" id="minArea" placeholder="50" value="70" min="0" step="10">
         </div>
         <div class="form-group">
-            <label>Postal Code</label>
-            <input type="text" id="postalCode" placeholder="70* or 71*" value="70">
+            <label>Region</label>
+            <select id="region">
+                <option value="">All Regions</option>
+                <option value="70">Stuttgart (70xxx)</option>
+                <option value="71">Böblingen/Sindelfingen (71xxx)</option>
+                <option value="714">Ludwigsburg (714xx)</option>
+                <option value="713">Rems-Murr-Kreis (713xx)</option>
+                <option value="7034">Filderstadt (7034x)</option>
+            </select>
         </div>
     </div>
 
@@ -472,11 +479,11 @@
             <div class="source-badges">
                 <label class="badge badge--sparkasse">
                     <input type="checkbox" id="source-sparkasse" checked>
-                    <span>Sparkasse (s-immobilien.de)</span>
+                    <span>Sparkasse Regional</span>
                 </label>
                 <label class="badge badge--volksbank">
                     <input type="checkbox" id="source-volksbank" checked>
-                    <span>Volksbank Stuttgart</span>
+                    <span>Volksbank Stuttgart/Filder</span>
                 </label>
                 <label class="badge badge--lbs">
                     <input type="checkbox" id="source-lbs" checked>
@@ -530,8 +537,11 @@
                 area: 85,
                 rooms: 3,
                 location: "Stuttgart-Feuerbach, 70469",
+                region: "70",
                 source: "sparkasse",
                 daysOnMarket: 3,
+                yearBuilt: 1995,
+                heatingType: "Gasheizung",
                 features: ["Balkon", "Parkett", "Renoviert 2023"],
                 url: "https://s-immobilien.de/property/123"
             },
@@ -542,8 +552,11 @@
                 area: 140,
                 rooms: 4,
                 location: "Stuttgart-Vaihingen, 70186",
+                region: "70",
                 source: "volksbank",
                 daysOnMarket: 1,
+                yearBuilt: 2015,
+                heatingType: "Wärmepumpe",
                 features: ["Garten 280m²", "Garage", "Neubau-Standard"],
                 url: "https://vbs.immo/property/456"
             },
@@ -554,8 +567,11 @@
                 area: 72,
                 rooms: 2,
                 location: "Stuttgart-Mitte, 70173",
+                region: "70",
                 source: "lbs",
                 daysOnMarket: 5,
+                yearBuilt: 1920,
+                heatingType: "Fernwärme",
                 features: ["Rendite 4,2%", "Denkmalschutz", "Makler"],
                 url: "https://www.lbs.de/property/789"
             },
@@ -566,8 +582,11 @@
                 area: 280,
                 rooms: 6,
                 location: "Stuttgart-Zauffenhausen, 70437",
+                region: "70",
                 source: "sparkasse",
                 daysOnMarket: 2,
+                yearBuilt: 2008,
+                heatingType: "Wärmepumpe",
                 features: ["Pool", "Sauna", "Moderne Smart-Home Technik"],
                 url: "https://s-immobilien.de/property/321"
             },
@@ -578,8 +597,11 @@
                 area: 68,
                 rooms: 2,
                 location: "Stuttgart-West, 70176",
+                region: "70",
                 source: "volksbank",
                 daysOnMarket: 4,
+                yearBuilt: 1975,
+                heatingType: "Gasheizung",
                 features: ["Dachterrasse", "High-Speed Internet", "Grüne Umgebung"],
                 url: "https://vbs.immo/property/654"
             },
@@ -590,10 +612,133 @@
                 area: 110,
                 rooms: 4,
                 location: "Stuttgart-Möhringen, 70435",
+                region: "70",
                 source: "lbs",
                 daysOnMarket: 6,
+                yearBuilt: 2005,
+                heatingType: "Wärmepumpe",
                 features: ["Doppelgarage", "Keller", "Wärmepumpe"],
                 url: "https://www.lbs.de/property/987"
+            },
+            {
+                id: 7,
+                title: "Modernes Einfamilienhaus in Sindelfingen",
+                price: 625000,
+                area: 135,
+                rooms: 4,
+                location: "Sindelfingen, 71063",
+                region: "71",
+                source: "sparkasse",
+                daysOnMarket: 2,
+                yearBuilt: 2018,
+                heatingType: "Wärmepumpe",
+                features: ["Energieeffizient KfW 55", "Terrasse", "Carport"],
+                url: "https://kskbb.de/property/201"
+            },
+            {
+                id: 8,
+                title: "Wohnung in Böblingen-Zentrum",
+                price: 485000,
+                area: 92,
+                rooms: 3,
+                location: "Böblingen, 71034",
+                region: "71",
+                source: "sparkasse",
+                daysOnMarket: 4,
+                yearBuilt: 1985,
+                heatingType: "Gasheizung",
+                features: ["Balkon", "Parklatz", "Treppenhaus renoviert"],
+                url: "https://kskbb.de/property/202"
+            },
+            {
+                id: 9,
+                title: "Einfamilienhaus in Ludwigsburg",
+                price: 720000,
+                area: 165,
+                rooms: 5,
+                location: "Ludwigsburg, 71638",
+                region: "714",
+                source: "volksbank",
+                daysOnMarket: 1,
+                yearBuilt: 2010,
+                heatingType: "Fernwärme",
+                features: ["Großer Garten", "Doppelgarage", "Kamin"],
+                url: "https://ksklb.de/property/301"
+            },
+            {
+                id: 10,
+                title: "Kapitalanlage Wohnung in Ludwigsburg",
+                price: 350000,
+                area: 65,
+                rooms: 2,
+                location: "Ludwigsburg, 71638",
+                region: "714",
+                source: "lbs",
+                daysOnMarket: 3,
+                yearBuilt: 1970,
+                heatingType: "Gasheizung",
+                features: ["Rendite 4,8%", "Vermietet", "Sanierungspotential"],
+                url: "https://www.lbs.de/property/302"
+            },
+            {
+                id: 11,
+                title: "Villa Waiblingen, Rems-Murr-Kreis",
+                price: 890000,
+                area: 250,
+                rooms: 6,
+                location: "Waiblingen, 71356",
+                region: "713",
+                source: "sparkasse",
+                daysOnMarket: 2,
+                yearBuilt: 2003,
+                heatingType: "Wärmepumpe",
+                features: ["Panoramablick", "Pool", "Wellness-Bereich"],
+                url: "https://kskwm.de/property/401"
+            },
+            {
+                id: 12,
+                title: "Doppelhaushälfte Schorndorf",
+                price: 550000,
+                area: 120,
+                rooms: 4,
+                location: "Schorndorf, 73614",
+                region: "713",
+                source: "volksbank",
+                daysOnMarket: 5,
+                yearBuilt: 2000,
+                heatingType: "Gasheizung",
+                features: ["Garten 200m²", "Terrasse", "Nebengebäude"],
+                url: "https://vrs.immo/property/402"
+            },
+            {
+                id: 13,
+                title: "Moderne Wohnung in Filderstadt",
+                price: 420000,
+                area: 78,
+                rooms: 2,
+                location: "Filderstadt, 70374",
+                region: "7034",
+                source: "volksbank",
+                daysOnMarket: 1,
+                yearBuilt: 2020,
+                heatingType: "Wärmepumpe",
+                features: ["Smart Home", "Balkon Süd", "Tiefgarage"],
+                url: "https://volksbank-filder.de/property/501"
+            },
+            {
+                id: 14,
+                title: "Haus zum Mitnehmen in Filderstadt",
+                price: 680000,
+                area: 155,
+                rooms: 5,
+                location: "Filderstadt-Bernhausen, 70374",
+                region: "7034",
+                source: "sparkasse",
+                daysOnMarket: 3,
+                yearBuilt: 1995,
+                heatingType: "Ölheizung",
+                features: ["Sanierungsbedürftig", "Großes Potential", "Ausbaugarten"],
+                url: "https://kskbb.de/property/502"
             }
         ];
 
@@ -604,7 +749,7 @@
             const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
             const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
             const minArea = parseFloat(document.getElementById('minArea').value) || 0;
-            const postalCode = document.getElementById('postalCode').value.trim();
+            const region = document.getElementById('region').value.trim();
 
             const sources = [];
             if (document.getElementById('source-sparkasse').checked) sources.push('sparkasse');
@@ -612,10 +757,11 @@
             if (document.getElementById('source-lbs').checked) sources.push('lbs');
 
             filteredProperties = MOCK_PROPERTIES.filter(prop => {
+                const regionMatch = region === '' || prop.region.startsWith(region);
                 return prop.price >= minPrice &&
                        prop.price <= maxPrice &&
                        prop.area >= minArea &&
-                       (postalCode === '' || prop.location.includes(postalCode)) &&
+                       regionMatch &&
                        sources.includes(prop.source);
             });
 
@@ -691,6 +837,11 @@
                             </div>
                             
                             <div>
+                                <div style="font-size: var(--font-size-sm); font-weight: 500; margin-bottom: var(--space-8); color: var(--color-text-secondary);">Baujahr & Heizung</div>
+                                <div style="display: flex; flex-wrap: wrap; gap: var(--space-6); margin-bottom: var(--space-12);">
+                                    <span style="display: inline-block; background: var(--color-bg-3); color: var(--color-green-500); padding: var(--space-4) var(--space-8); border-radius: var(--radius-base); font-size: var(--font-size-sm);">🏗️ ${prop.yearBuilt}</span>
+                                    <span style="display: inline-block; background: var(--color-bg-2); color: var(--color-orange-500); padding: var(--space-4) var(--space-8); border-radius: var(--radius-base); font-size: var(--font-size-sm);">🔥 ${prop.heatingType}</span>
+                                </div>
                                 <div style="font-size: var(--font-size-sm); font-weight: 500; margin-bottom: var(--space-8); color: var(--color-text-secondary);">Features</div>
                                 <div style="display: flex; flex-wrap: wrap; gap: var(--space-6);">
                                     ${prop.features.map(f => `<span style="display: inline-block; background: var(--color-bg-1); color: var(--color-teal-500); padding: var(--space-4) var(--space-8); border-radius: var(--radius-base); font-size: var(--font-size-sm);">${f}</span>`).join('')}
