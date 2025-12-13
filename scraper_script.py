@@ -174,12 +174,6 @@ def main():
     finally:
         agent.close()
 
-    # Fallback if scraping is blocked or fails (so the UI isn't empty)
-    if not all_properties:
-        logger.info("⚠️ Using fallback data due to scraping restrictions/failure")
-        from property_scraper_cached import FALLBACK_PROPERTIES
-        all_properties = FALLBACK_PROPERTIES
-
     # Save Results
     output_file = 'properties_cache.json'
     with open(output_file, 'w', encoding='utf-8') as f:
