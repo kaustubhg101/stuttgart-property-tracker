@@ -5,6 +5,8 @@ import json
 import time
 import logging
 import random
+import os
+import re
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -34,7 +36,23 @@ class PropertyAgent:
         chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
         
         # Use webdriver_manager to automatically install the correct driver
-        service = Service(ChromeDriverManager().install())
+        driver_path = ChromeDriverManager().install()
+        
+        # FIX: webdriver_manager 4.x sometimes returns the wrong file (THIRD_PARTY_NOTICES)
+        # We manually correct it to point to the actual binary 'chromedriver' in the same directory
+        if "THIRD_PARTY_NOTICES" in driver_path:
+            logger.info(f"⚠️ WebDriverManager returned invalid path: {driver_path}")
+            driver_path = os.path.join(os.path.dirname(driver_path), "chromedriver")
+            logger.info(f"🔧 Corrected driver path to: {driver_path}")
+            
+            # Ensure it is executable
+            try:
+                st = os.stat(driver_path)
+                os.chmod(driver_path, st.st_mode | 0o111)
+            except Exception as e:
+                logger.warning(f"Could not chmod driver: {e}")
+
+        service = Service(driver_path)
         return webdriver.Chrome(service=service, options=chrome_options)
 
     def close(self):
@@ -51,12 +69,13 @@ class PropertyAgent:
                 "button[class*='cookie']",
                 "a[class*='cookie']",
                 "button[title*='Zustimmen']",
-                "button:contains('Akzeptieren')"
+                "button:contains('Akzeptieren')",
+                "cc-button"
             ]
             
             for selector in cookie_selectors:
                 try:
-                    element = WebDriverWait(self.driver, 3).until(
+                    element = WebDriverWait(self.driver, 2).until(
                         EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
                     )
                     element.click()
@@ -73,26 +92,15 @@ class PropertyAgent:
         url = "https://www.kskbb.de/de/home/privatkunden/immobilien/immobilie-kaufen.html"
         logger.info(f"🕵️ Agent opening: {url}")
         
-        self.driver.get(url)
-        time.sleep(3) # Wait for initial load
-        self.handle_cookie_banner()
-        
-        # 1. Input Parameters
-        # Note: Selectors (.input-field) are examples; actual IDs need to be inspected on the live site
-        # Often easier to inject parameters into URL, but here is the 'Interaction' method:
         try:
+            self.driver.get(url)
+            time.sleep(3) # Wait for initial load
+            self.handle_cookie_banner()
+            
+            # 1. Input Parameters (Example interaction - placeholder for future)
             if min_price:
-                logger.info(f"⌨️ Typing price: {min_price}")
-                # Example interaction - this finds an input with 'preis' in the name
-                price_input = self.driver.find_element(By.XPATH, "//input[contains(@name, 'preis') or contains(@id, 'price')]")
-                price_input.clear()
-                price_input.send_keys(str(min_price))
-            
-            # Click Search Button
-            logger.info("🖱️ Clicking search...")
-            search_btn = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit'], input[type='submit']")
-            search_btn.click()
-            
+                pass 
+                
             # Wait for results to load
             WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "expose")) # 'expose' is common wrapper class
@@ -100,7 +108,7 @@ class PropertyAgent:
             time.sleep(2)
             
         except Exception as e:
-            logger.warning(f"⚠️ Interaction failed, falling back to direct parsing: {e}")
+            logger.warning(f"⚠️ Navigation/Interaction issue: {e}")
         
         # 2. Extract Data
         return self.extract_page_source("kskbb")
@@ -111,7 +119,6 @@ class PropertyAgent:
         results = []
         
         # Generic scraper for typical property card structures
-        # Adjust class names based on inspection of specific bank site
         cards = soup.find_all('div', class_=lambda x: x and ('expose' in x or 'property' in x or 'objekt' in x))
         
         for card in cards:
@@ -145,7 +152,7 @@ class PropertyAgent:
                     "title": title,
                     "price": price,
                     "area": area,
-                    "location": "Böblingen District", # Placeholder, try to scrape specific location
+                    "location": "Böblingen District", # Placeholder
                     "source": source_name,
                     "url": link,
                     "scrapedAt": datetime.now().isoformat()
@@ -165,25 +172,27 @@ def main():
         ksk_props = agent.search_ksk_boeblingen(min_price=200000)
         all_properties.extend(ksk_props)
         
-        # Add other banks here...
+        # Future banks can be added here
         
     except Exception as e:
         logger.error(f"❌ Scraper Agent failed: {e}")
-        # In case of failure, we might want to keep old data or partial data
         
     finally:
         agent.close()
 
-    # Save Results
+    # Save Results - NO FALLBACKS
     output_file = 'properties_cache.json'
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump({
-            'properties': all_properties,
-            'lastUpdated': datetime.now().isoformat(),
-            'totalCount': len(all_properties)
-        }, f, ensure_ascii=False, indent=2)
-    
-    logger.info(f"💾 Saved {len(all_properties)} properties")
+    try:
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump({
+                'properties': all_properties,
+                'lastUpdated': datetime.now().isoformat(),
+                'totalCount': len(all_properties)
+            }, f, ensure_ascii=False, indent=2)
+        
+        logger.info(f"💾 Saved {len(all_properties)} properties")
+    except Exception as e:
+        logger.error(f"Failed to write output file: {e}")
 
 if __name__ == '__main__':
     main()
