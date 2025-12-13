@@ -544,56 +544,57 @@
     <div class="results-section" id="results"></div>
 
     <script>
-        // ⚠️ UPDATE THIS with your actual Render URL
-        const API_URL = 'https://property-tracker-backend.onrender.com/api/search';
+        // Serverless Config: Fetch static JSON directly
+        // Fallback: If local file not found, try raw GitHub URL (adjust 'main' if branch is different)
+        const DATA_URL_LOCAL = '../properties_cache.json';
+        const DATA_URL_REMOTE = 'https://raw.githubusercontent.com/kaustubhg101/stuttgart-property-tracker/main/properties_cache.json';
 
-        // Fallback mock data
-        const MOCK_PROPERTIES = [
-            {
-                id: 1,
-                title: "Renovierte 3-Zimmer Wohnung, Süd-West Lage",
-                price: 520000,
-                area: 85,
-                rooms: 3,
-                location: "Stuttgart-Feuerbach, 70469",
-                source: "sparkasse",
-                daysOnMarket: 3,
-                yearBuilt: 1995,
-                heatingType: "Gasheizung",
-                features: ["Balkon", "Parkett", "Renoviert 2023"]
-            },
-            {
-                id: 2,
-                title: "4-Zimmer Einfamilienhaus mit Garten",
-                price: 675000,
-                area: 140,
-                rooms: 4,
-                location: "Stuttgart-Vaihingen, 70186",
-                source: "volksbank",
-                daysOnMarket: 1,
-                yearBuilt: 2015,
-                heatingType: "Wärmepumpe",
-                features: ["Garten 280m²", "Garage", "Neubau-Standard"]
-            },
-            {
-                id: 3,
-                title: "Kapitalanlage: 2er Maisonette, zentral",
-                price: 395000,
-                area: 72,
-                rooms: 2,
-                location: "Stuttgart-Mitte, 70173",
-                source: "lbs",
-                daysOnMarket: 5,
-                yearBuilt: 1920,
-                heatingType: "Fernwärme",
-                features: ["Rendite 4,2%", "Denkmalschutz", "Makler"]
-            }
-        ];
-
+        let allPropertiesData = [];
         let currentSort = 'price-asc';
         let filteredProperties = [];
 
         async function searchProperties() {
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = '<span class="loading">⏳</span> Loading Data...';
+
+            try {
+                // Fetch data if we haven't already
+                if (allPropertiesData.length === 0) {
+                    try {
+                        // Try local file first (best for dev)
+                        const response = await fetch(DATA_URL_LOCAL);
+                        if (!response.ok) throw new Error('Local file not found');
+                        const data = await response.json();
+                        allPropertiesData = data.properties || [];
+                        showApiStatus('✅ Loaded data from local cache', 'success');
+                    } catch (e) {
+                        console.log('Local fetch failed, trying remote...', e);
+                        // Fallback to Raw GitHub URL
+                        const response = await fetch(DATA_URL_REMOTE);
+                        if (!response.ok) throw new Error('Failed to load data from repository');
+                        const data = await response.json();
+                        allPropertiesData = data.properties || [];
+                        showApiStatus('✅ Loaded data from GitHub Repository', 'success');
+                    }
+                }
+
+                // Apply Filters locally
+                applyFilters();
+
+            } catch (error) {
+                console.error('Data loading error:', error);
+                showApiStatus(`⚠️ Could not load property data: ${error.message}`, 'error');
+                filteredProperties = [];
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = '🔍 Search Properties';
+                displayResults();
+                displayStats();
+            }
+        }
+
+        function applyFilters() {
             const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
             const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
             const minArea = parseFloat(document.getElementById('minArea').value) || 0;
@@ -603,62 +604,29 @@
             if (document.getElementById('source-sparkasse').checked) sources.push('sparkasse');
             if (document.getElementById('source-volksbank').checked) sources.push('volksbank');
             if (document.getElementById('source-lbs').checked) sources.push('lbs');
-
-            if (sources.length === 0) {
-                alert('Please select at least one data source');
-                return;
-            }
-
-            const searchBtn = document.getElementById('searchBtn');
-            searchBtn.disabled = true;
-            searchBtn.innerHTML = '<span class="loading">⏳</span> Searching...';
-
-            try {
-                const filters = {
-                    minPrice,
-                    maxPrice,
-                    minArea,
-                    region: region || '',
-                    sources
-                };
-
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(filters)
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        filteredProperties = data.properties;
-                        showApiStatus('✅ Live data loaded from backend', 'success');
-                    } else {
-                        throw new Error(data.error || 'API returned error');
-                    }
-                } else {
-                    throw new Error(`HTTP ${response.status}`);
+            // Allow other sources (e.g. kskbb) if they map to one of the checked types or just show all if checked
+            // Simplification: checking 'sparkasse' includes 'kskbb' if we want, or we rely on exact string match.
+            // Let's assume exact match for now, or partial match if needed.
+            
+            filteredProperties = allPropertiesData.filter(prop => {
+                const priceMatch = prop.price >= minPrice && prop.price <= maxPrice;
+                const areaMatch = prop.area >= minArea;
+                
+                // Simple region match (zip code prefix)
+                let regionMatch = true;
+                if (region) {
+                    regionMatch = prop.location.includes(region) || 
+                                  (prop.zipCode && prop.zipCode.startsWith(region)); 
                 }
-            } catch (error) {
-                console.error('API error:', error);
-                showApiStatus(`⚠️ Backend unavailable, using cached demo data: ${error.message}`, 'error');
-                filteredProperties = MOCK_PROPERTIES.filter(prop => {
-                    const sources = [];
-                    if (document.getElementById('source-sparkasse').checked) sources.push('sparkasse');
-                    if (document.getElementById('source-volksbank').checked) sources.push('volksbank');
-                    if (document.getElementById('source-lbs').checked) sources.push('lbs');
-                    
-                    return prop.price >= minPrice &&
-                           prop.price <= maxPrice &&
-                           prop.area >= minArea &&
-                           sources.includes(prop.source);
-                });
-            } finally {
-                searchBtn.disabled = false;
-                searchBtn.innerHTML = '🔍 Search Properties';
-                displayResults();
-                displayStats();
-            }
+
+                // Source match (flexible)
+                let sourceMatch = false;
+                if (sources.includes(prop.source)) sourceMatch = true;
+                // Map 'kskbb' to 'sparkasse' for filtering if needed
+                if (prop.source === 'kskbb' && sources.includes('sparkasse')) sourceMatch = true;
+
+                return priceMatch && areaMatch && regionMatch && sourceMatch;
+            });
         }
 
         function showApiStatus(message, status) {
@@ -689,34 +657,51 @@
                 switch(currentSort) {
                     case 'price-asc': return a.price - b.price;
                     case 'price-desc': return b.price - a.price;
-                    case 'newest': return a.daysOnMarket - b.daysOnMarket;
+                    case 'newest': return (new Date(b.scrapedAt) - new Date(a.scrapedAt)); // Approximate "newest" by scrape time or daysOnMarket
                     case 'largest': return b.area - a.area;
                     default: return 0;
                 }
             });
 
-            filterInfo.innerHTML = `<div class="filter-info">Showing ${sorted.length} properties - ${sorted.filter(p => p.daysOnMarket <= 7).length} in pre-market phase</div>`;
+            // Calculate pre-market based on scrapedAt date if daysOnMarket is missing
+            const now = new Date();
+            const preMarketCount = sorted.filter(p => {
+                const scrapedDate = new Date(p.scrapedAt);
+                const diffTime = Math.abs(now - scrapedDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                return diffDays <= 7;
+            }).length;
+
+            filterInfo.innerHTML = `<div class="filter-info">Showing ${sorted.length} properties - ${preMarketCount} recently found</div>`;
 
             resultsDiv.innerHTML = sorted.map(prop => {
-                const pricePerSqm = Math.round(prop.price / prop.area);
-                const isPreMarket = prop.daysOnMarket <= 7;
+                const pricePerSqm = prop.area > 0 ? Math.round(prop.price / prop.area) : 0;
+                // Fallback for missing fields
+                const features = prop.features || [];
+                const yearBuilt = prop.yearBuilt || '-';
+                const heatingType = prop.heatingType || '-';
+                
+                // Calculate age of listing
+                const scrapedDate = new Date(prop.scrapedAt);
+                const diffDays = Math.ceil(Math.abs(new Date() - scrapedDate) / (1000 * 60 * 60 * 24));
+                const isNew = diffDays <= 3;
 
                 return `
                     <div class="property-card">
                         <div>
                             <div class="property-header">
-                                <h3 class="property-title">${prop.title}</h3>
-                                <span class="property-source source-${prop.source}">${prop.source === 'sparkasse' ? 'Sparkasse' : prop.source === 'volksbank' ? 'Volksbank' : 'LBS'}</span>
+                                <h3 class="property-title"><a href="${prop.url}" target="_blank" style="text-decoration: none; color: inherit;">${prop.title}</a></h3>
+                                <span class="property-source source-${prop.source}">${prop.source}</span>
                             </div>
                             <p style="margin: 0 0 var(--space-12) 0; color: var(--color-text-secondary); font-size: var(--font-size-sm);">${prop.location}</p>
                             
-                            ${isPreMarket ? `<div class="alert-badge"><span>⚡</span> Early Access: ${prop.daysOnMarket} day${prop.daysOnMarket !== 1 ? 's' : ''} old</div>` : ''}
+                            ${isNew ? `<div class="alert-badge"><span>⚡</span> New Listing</div>` : ''}
                             
                             <div class="days-on-market">
-                                <div class="days-badge">${prop.daysOnMarket}d</div>
+                                <div class="days-badge">${diffDays}d</div>
                                 <div>
-                                    <div style="font-weight: 600;">On Market</div>
-                                    <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">${prop.daysOnMarket <= 7 ? 'Still in pre-market window' : 'Likely already listed elsewhere'}</div>
+                                    <div style="font-weight: 600;">Tracked since</div>
+                                    <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">${scrapedDate.toLocaleDateString()}</div>
                                 </div>
                             </div>
                         </div>
@@ -734,19 +719,21 @@
                                 </div>
                                 <div class="detail-item">
                                     <div class="detail-label">Rooms</div>
-                                    <div class="detail-value">${prop.rooms}</div>
+                                    <div class="detail-value">${prop.rooms || '-'}</div>
                                 </div>
                             </div>
                             
                             <div>
-                                <div style="font-size: var(--font-size-sm); font-weight: 500; margin-bottom: var(--space-8); color: var(--color-text-secondary);">Baujahr & Heizung</div>
+                                <div style="font-size: var(--font-size-sm); font-weight: 500; margin-bottom: var(--space-8); color: var(--color-text-secondary);">Details</div>
                                 <div style="display: flex; flex-wrap: wrap; gap: var(--space-6); margin-bottom: var(--space-12);">
-                                    <span style="display: inline-block; background: var(--color-bg-3); color: var(--color-green-500); padding: var(--space-4) var(--space-8); border-radius: var(--radius-base); font-size: var(--font-size-sm);">🏗️ ${prop.yearBuilt}</span>
-                                    <span style="display: inline-block; background: var(--color-bg-2); color: var(--color-orange-500); padding: var(--space-4) var(--space-8); border-radius: var(--radius-base); font-size: var(--font-size-sm);">🔥 ${prop.heatingType}</span>
+                                    ${yearBuilt !== '-' ? `<span style="display: inline-block; background: var(--color-bg-3); color: var(--color-green-500); padding: var(--space-4) var(--space-8); border-radius: var(--radius-base); font-size: var(--font-size-sm);">🏗️ ${yearBuilt}</span>` : ''}
+                                    ${heatingType !== '-' ? `<span style="display: inline-block; background: var(--color-bg-2); color: var(--color-orange-500); padding: var(--space-4) var(--space-8); border-radius: var(--radius-base); font-size: var(--font-size-sm);">🔥 ${heatingType}</span>` : ''}
                                 </div>
-                                <div style="font-size: var(--font-size-sm); font-weight: 500; margin-bottom: var(--space-8); color: var(--color-text-secondary);">Features</div>
                                 <div style="display: flex; flex-wrap: wrap; gap: var(--space-6);">
-                                    ${prop.features.map(f => `<span style="display: inline-block; background: var(--color-bg-1); color: var(--color-teal-500); padding: var(--space-4) var(--space-8); border-radius: var(--radius-base); font-size: var(--font-size-sm);">${f}</span>`).join('')}
+                                    ${features.map(f => `<span style="display: inline-block; background: var(--color-bg-1); color: var(--color-teal-500); padding: var(--space-4) var(--space-8); border-radius: var(--radius-base); font-size: var(--font-size-sm);">${f}</span>`).join('')}
+                                </div>
+                                <div style="margin-top: var(--space-16);">
+                                    <a href="${prop.url}" target="_blank" class="btn btn-secondary" style="width: 100%; text-align: center; display: block; text-decoration: none;">View Exposé ↗</a>
                                 </div>
                             </div>
                         </div>
@@ -765,14 +752,19 @@
             statsGrid.style.display = 'grid';
 
             const totalCount = filteredProperties.length;
-            const avgPrice = Math.round(filteredProperties.reduce((sum, p) => sum + (p.price / p.area), 0) / filteredProperties.length);
-            const preMarket = filteredProperties.filter(p => p.daysOnMarket <= 7).length;
-            const timeAdvantage = preMarket > 0 ? '48-72hrs' : '-';
+            const avgPrice = Math.round(filteredProperties.reduce((sum, p) => sum + (p.price / (p.area || 1)), 0) / filteredProperties.length);
+            
+            // Re-calc pre-market for stats
+            const now = new Date();
+            const preMarket = filteredProperties.filter(p => {
+                const diffDays = Math.ceil(Math.abs(now - new Date(p.scrapedAt)) / (1000 * 60 * 60 * 24));
+                return diffDays <= 7;
+            }).length;
 
             document.getElementById('totalCount').textContent = totalCount;
             document.getElementById('avgPrice').textContent = '€' + avgPrice.toLocaleString('de-DE');
             document.getElementById('preMarket').textContent = preMarket;
-            document.getElementById('timeAdvantage').textContent = timeAdvantage;
+            document.getElementById('timeAdvantage').textContent = preMarket > 0 ? 'High' : '-';
         }
 
         function setSortOrder(order) {
@@ -790,11 +782,10 @@
             document.getElementById('source-sparkasse').checked = true;
             document.getElementById('source-volksbank').checked = true;
             document.getElementById('source-lbs').checked = true;
-            document.getElementById('results').innerHTML = '';
-            document.getElementById('statsGrid').style.display = 'none';
-            document.getElementById('sortControls').style.display = 'none';
-            document.getElementById('filterInfo').innerHTML = '';
-            document.getElementById('apiStatus').style.display = 'none';
+            // Reset results
+            applyFilters();
+            displayResults();
+            displayStats();
         }
 
         // Auto-search on load
