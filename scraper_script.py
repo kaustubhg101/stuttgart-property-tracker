@@ -22,14 +22,23 @@ def main():
 
     # 2. Configure Gemini
     genai.configure(api_key=api_key)
-    
-    # FIX: Use the correct tool syntax for Google Search
-    # We use 'gemini-2.0-flash-exp' which is fast and supports search
+        
     tools = [{'google_search': {}}] 
     
-    model = genai.GenerativeModel(
-        'gemini-2.0-flash-exp', 
-        tools=tools
+    model = "gemini-3-pro-preview"
+
+     
+    tools = [
+        types.Tool(googleSearch=types.GoogleSearch(
+        )),
+    ]
+    generate_content_config = types.GenerateContentConfig(
+        thinkingConfig: {
+            thinkingLevel: "HIGH",
+        },
+        tools=tools,
+        response_mime_type="application/json",
+    )
     )
 
     # 3. Define the Agent Prompt
@@ -71,9 +80,18 @@ def main():
     
     IMPORTANT: 
     - Return ONLY the JSON. 
+    - Do NOT invent data. If a field like yearBuilt is missing, use null.
     - Ensure 'price' and 'area' are numbers, not strings.
     - Do not use markdown formatting (no ```json code blocks).
     """
+    contents = [
+        types.Content(
+            role="user",
+            parts=[
+                types.Part.from_text(text=prompt),
+            ],
+        ),
+    ]
 
     # 4. Run the Search & Generation
     try:
