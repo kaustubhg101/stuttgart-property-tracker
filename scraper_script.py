@@ -39,7 +39,7 @@ def main():
         tools=tools,
         response_mime_type="application/json",
     )
-    )
+    
 
     # 3. Define the Agent Prompt
     # We ask for a specific JSON structure to ensure the frontend can read it.
