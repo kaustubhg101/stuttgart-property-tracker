@@ -6,6 +6,7 @@ import json
 import logging
 import google.generativeai as genai
 from datetime import datetime
+from google.genai import types
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
