@@ -26,8 +26,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Selenium Agent
-        # The script uses webdriver-manager, so it will auto-download the correct driver
+      - name: Run Gemini Agent
+        env:
+          # This pulls the key from the secret you just created
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scraper_script.py
 
       - name: Configure git
@@ -41,6 +43,6 @@ jobs:
             echo "No changes in cache"
           else
             git add properties_cache.json
-            git commit -m "🔄 Update properties cache - $(date +'%Y-%m-%d %H:%M:%S')"
+            git commit -m "🔄 Update properties cache via Gemini - $(date +'%Y-%m-%d %H:%M:%S')"
             git push
           fi
