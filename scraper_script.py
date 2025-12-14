@@ -32,10 +32,7 @@ def main():
         types.Tool(googleSearch=types.GoogleSearch(
         )),
     ]
-    generate_content_config = types.GenerateContentConfig(
-        thinkingConfig: {
-            thinkingLevel: "HIGH",
-        },
+    generate_content_config = types.GenerateContentConfig(        
         tools=tools,
         response_mime_type="application/json",
     )
